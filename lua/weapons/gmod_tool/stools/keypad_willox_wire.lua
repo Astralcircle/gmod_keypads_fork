@@ -70,7 +70,7 @@ end
 
 function TOOL:RightClick(tr)
     if not WireLib then return false end
-	if not IsValid(tr.Entity) or not tr.Entity:GetClass():lower() == "keypad_wire" then return false end
+	if not IsValid(tr.Entity) or tr.Entity:GetClass() ~= "keypad_wire" then return false end
 
 	if CLIENT then return true end
 
@@ -78,14 +78,14 @@ function TOOL:RightClick(tr)
 	local password = tonumber(ply:GetInfo("keypad_willox_wire_password"))
 
 	local spawn_pos = tr.HitPos
-	local trace_ent = tr.Entity
 
 	if password == nil or (string.len(tostring(password)) > 4) or (string.find(tostring(password), "0")) then
 		ply:PrintMessage(3, "Invalid password!")
 		return false
 	end
 
-	self:SetupKeypad(trace_ent, password)
+	self:SetupKeypad(tr.Entity, password)
+
 	return true
 end
 
