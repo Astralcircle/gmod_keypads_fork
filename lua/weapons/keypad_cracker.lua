@@ -111,6 +111,10 @@ function SWEP:PrimaryAttack()
 	end
 end
 
+function SWEP:SecondaryAttack()
+
+end
+
 function SWEP:Holster()
 	self.IsCracking = false
 
