@@ -10,8 +10,9 @@ local mat = CreateMaterial("aeypad_baaaaaaaaaaaaaaaaaaase", "VertexLitGeneric", 
 function ENT:Draw()
 	local pos = self:GetPos()
 	render.SetMaterial(mat)
-	render.DrawBox(pos, self:GetAngles(), self.Mins, self.Maxs, color_white)
-	if pos:Distance(EyePos()) > 1024 then return end
+
+	render.DrawBox(pos, self:GetAngles(), self.Mins, self.Maxs, color_white, true)
+	if pos:DistToSqr(EyePos()) > 1048576 then return end
 
 	local pos, ang = self:CalculateRenderPos(), self:CalculateRenderAng()
 
@@ -20,7 +21,7 @@ function ENT:Draw()
 
 	local scale = self.Scale -- A high scale avoids surface call integerising from ruining aesthetics
 
-	cam.Start3D2D(pos, ang, self.Scale)
+	cam.Start3D2D(pos, ang, scale)
 		self:Paint(w, h, x, y)
 	cam.End3D2D()
 end

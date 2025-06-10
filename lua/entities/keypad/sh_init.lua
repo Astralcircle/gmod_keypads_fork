@@ -1,8 +1,7 @@
-ENT.Base = "base_gmodentity"
+ENT.Base = WireLib and "base_wire_entity" or "base_gmodentity"
 ENT.Type = "anim"
 
 ENT.Model = Model("models/props_lab/keypad.mdl")
-
 ENT.Spawnable = true
 
 ENT.Scale = 0.02
@@ -40,12 +39,40 @@ function ENT:Initialize()
 			phys:Wake()
 		end
 
+		if WireLib then
+			self.Outputs = Wire_CreateOutputs(self, {"Access Granted", "Access Denied"})
+		end
+
 		self:SetValue("")
 		self:SetPassword("1337")
 		self:SetKeypadOwner(NULL)
 
-		-- Initialize defaults
-		self:GetData()
+		if(not self.KeypadData) then
+			self:SetData({
+				Password = 1337,
+
+				RepeatsGranted = 0,
+				RepeatsDenied = 0,
+
+				LengthGranted = 0,
+				LengthDenied = 0,
+
+				DelayGranted = 0,
+				DelayDenied = 0,
+
+				InitDelayGranted = 0,
+				InitDelayDenied = 0,
+
+				KeyGranted = 0,
+				KeyDenied = 0,
+
+				OutputOn = 0,
+				OutputOff = 0,
+
+				Secure = false,
+				Owner = NULL
+			})
+		end
 
 		self:Reset()
 	end

@@ -4,18 +4,11 @@ AddCSLuaFile()
 
 local keypad_crack_time = CreateConVar("keypad_crack_time", "30", {FCVAR_ARCHIVE}, "Seconds for keypad cracker to crack keypad")
 
-if SERVER then
-	util.AddNetworkString("KeypadCracker_Hold")
-	util.AddNetworkString("KeypadCracker_Sparks")
-end
-
-if CLIENT then
-	SWEP.PrintName = "Keypad Cracker"
-	SWEP.Slot = 4
-	SWEP.SlotPos = 1
-	SWEP.DrawAmmo = false
-	SWEP.DrawCrosshair = true
-end
+SWEP.PrintName = "Keypad Cracker"
+SWEP.Slot = 4
+SWEP.SlotPos = 1
+SWEP.DrawAmmo = false
+SWEP.DrawCrosshair = true
 
 SWEP.Author = "Willox"
 SWEP.Instructions = "Left click to crack keypad"
@@ -24,8 +17,9 @@ SWEP.Purpose = ""
 
 SWEP.ViewModelFOV = 62
 SWEP.ViewModelFlip = false
-SWEP.ViewModel = Model("models/weapons/v_c4.mdl")
+SWEP.ViewModel = Model("models/weapons/cstrike/c_c4.mdl")
 SWEP.WorldModel = Model("models/weapons/w_c4.mdl")
+SWEP.UseHands = true
 
 SWEP.Spawnable = true
 SWEP.AnimPrefix = "python"

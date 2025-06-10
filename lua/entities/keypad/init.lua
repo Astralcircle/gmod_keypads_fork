@@ -5,50 +5,6 @@ AddCSLuaFile "sh_init.lua"
 
 include "sh_init.lua"
 
-util.AddNetworkString("Keypad")
-
-
-net.Receive("Keypad", function(_, ply)
-	local ent = net.ReadEntity()
-
-	if not IsValid(ply) or not IsValid(ent) or ent:GetClass():lower() ~= "keypad" then
-		return
-	end
-
-	if ent:GetStatus() ~= ent.Status_None then
-		return
-	end
-
-	if ply:EyePos():Distance(ent:GetPos()) >= 120 then
-		return
-	end
-
-	if ent.Next_Command_Time and ent.Next_Command_Time > CurTime() then
-		return
-	end
-
-	ent.Next_Command_Time = CurTime() + 0.05
-
-	local command = net.ReadUInt(4)
-
-	if command == ent.Command_Enter then
-		local val = tonumber(ent:GetValue() .. net.ReadUInt(8))
-
-		if val and val > 0 and val <= 9999 then
-			ent:SetValue(tostring(val))
-			ent:EmitSound("buttons/button15.wav")
-		end
-	elseif command == ent.Command_Abort then
-		ent:SetValue("")
-	elseif command == ent.Command_Accept then
-		if ent:GetValue() == ent:GetPassword() then
-			ent:Process(true)
-		else
-			ent:Process(false)
-		end
-	end
-end)
-
 function ENT:SetValue(val)
 	self.Value = val
 
@@ -64,26 +20,26 @@ function ENT:GetValue()
 end
 
 function ENT:Process(granted)
-	self:GetData()
-
-	local length, repeats, delay, initdelay, key
+	local length, repeats, delay, initdelay, key, outputKey
 
 	if(granted) then
 		self:SetStatus(self.Status_Granted)
 
-		length    = self.KeypadData.LengthGranted
-		repeats   = math.min(self.KeypadData.RepeatsGranted, 50)
-		delay     = self.KeypadData.DelayGranted
+		length = self.KeypadData.LengthGranted
+		repeats = math.min(self.KeypadData.RepeatsGranted, 50)
+		delay = self.KeypadData.DelayGranted
 		initdelay = self.KeypadData.InitDelayGranted
-		key       = tonumber(self.KeypadData.KeyGranted) or 0
+		key = tonumber(self.KeypadData.KeyGranted) or 0
+		outputKey = "Access Granted"
 	else
 		self:SetStatus(self.Status_Denied)
 
-		length    = self.KeypadData.LengthDenied
-		repeats   = math.min(self.KeypadData.RepeatsDenied, 50)
-		delay     = self.KeypadData.DelayDenied
+		length = self.KeypadData.LengthDenied
+		repeats = math.min(self.KeypadData.RepeatsDenied, 50)
+		delay = self.KeypadData.DelayDenied
 		initdelay = self.KeypadData.InitDelayDenied
-		key       = tonumber(self.KeypadData.KeyDenied) or 0
+		key = tonumber(self.KeypadData.KeyDenied) or 0
+		outputKey = "Access Denied"
 	end
 
 	local owner = self:GetKeypadOwner()
@@ -100,19 +56,27 @@ function ENT:Process(granted)
 				timer.Simple(length * i + delay * i, function()
 					if(IsValid(self) and IsValid(owner)) then
 						numpad.Activate(owner, key, true)
+
+						if WireLib then
+							Wire_TriggerOutput(self, outputKey, self.KeypadData.OutputOn)
+						end
 					end
 				end)
 
 				timer.Simple(length * (i + 1) + delay * i, function()
 					if(IsValid(self) and IsValid(owner)) then
 						numpad.Deactivate(owner, key, true)
+
+						if WireLib then
+							Wire_TriggerOutput(self, outputKey, self.KeypadData.OutputOff)
+						end
 					end
 				end)
 			end
 		end
 	end)
 
-	if(granted) then
+	if granted then
 		self:EmitSound("buttons/button9.wav")
 	else
 		self:EmitSound("buttons/button11.wav")
@@ -147,6 +111,9 @@ function ENT:GetData()
 			KeyGranted = 0,
 			KeyDenied = 0,
 
+			OutputOn = 0,
+			OutputOff = 0,
+
 			Secure = false
 		} )
 	end
@@ -157,11 +124,15 @@ end
 function ENT:Reset()
 	self:SetValue("")
 	self:SetStatus(self.Status_None)
-	self:SetSecure(self:GetData().Secure)
+	self:SetSecure(self.KeypadData.Secure)
+
+	if WireLib then
+		Wire_TriggerOutput(self, "Access Granted", self.KeypadData.OutputOff)
+		Wire_TriggerOutput(self, "Access Denied", self.KeypadData.OutputOff)
+	end
 end
 
-
-duplicator.RegisterEntityModifier( "keypad_password_passthrough", function(ply, entity, data)
+duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, entity, data)
 	entity:SetKeypadOwner(ply)
-    entity:SetData(data)
+	entity:SetData(data)
 end)
