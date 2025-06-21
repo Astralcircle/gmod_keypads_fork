@@ -8,9 +8,10 @@ local mat = CreateMaterial("aeypad_baaaaaaaaaaaaaaaaaaase", "VertexLitGeneric", 
 })
 
 function ENT:Draw()
+	local pos = self:GetPos()
 	render.SetMaterial(mat)
-
-	render.DrawBox(self:GetPos(), self:GetAngles(), self.Mins, self.Maxs, color_white, true)
+	render.DrawBox(pos, self:GetAngles(), self.Mins, self.Maxs, color_white)
+	if pos:Distance(EyePos()) > 1024 then return end
 
 	local pos, ang = self:CalculateRenderPos(), self:CalculateRenderAng()
 
