@@ -158,7 +158,7 @@ end
 
 function ENT:Reset()
 	self:GetData()
-	
+
 	self:SetValue("")
 	self:SetStatus(self.Status_None)
 	self:SetSecure(self.KeypadData.Secure)

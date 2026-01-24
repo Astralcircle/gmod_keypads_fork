@@ -119,7 +119,7 @@ function TOOL:LeftClick(tr)
 	local weld = util.tobool(self:GetClientNumber("weld"))
 
 	if freeze or weld then
-		local phys = ent:GetPhysicsObject() 
+		local phys = ent:GetPhysicsObject()
 
 		if IsValid(phys) then
 			phys:EnableMotion(false)
@@ -161,7 +161,7 @@ if CLIENT then
 	concommand.Add("keypad_willox_wire_reset", ResetSettings)
 
 	function TOOL.BuildCPanel(CPanel)
-        if not WireLib then 
+        if not WireLib then
             CPanel:Help("This tool requires Wiremod to function")
             CPanel:Help("http://wiremod.com/")
             CPanel:Help("Workshop Addon #160250458")
@@ -186,7 +186,7 @@ if CLIENT then
 	    		granted:NumSlider("Multiple Press Delay", "keypad_willox_wire_delay_granted", 0, 10, 2)
 	    		granted:NumSlider("Additional Repeats", "keypad_willox_wire_repeats_granted", 0, 5, 0)
     		CPanel:AddItem(granted)
-    		
+
     		local denied = vgui.Create("DForm")
     			denied:SetName("Access Denied Settings")
 

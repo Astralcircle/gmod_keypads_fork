@@ -28,7 +28,7 @@ net.Receive("Keypad", function(_, ply)
 	end
 
 	ent.Next_Command_Time = CurTime() + 0.05
-	
+
 	local command = net.ReadUInt(4)
 
 	if command == ent.Command_Enter then
@@ -65,7 +65,7 @@ end
 
 function ENT:Process(granted)
 	self:GetData()
-	
+
 	local length, repeats, delay, initdelay, key
 
 	if(granted) then

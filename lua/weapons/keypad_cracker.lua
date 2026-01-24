@@ -57,7 +57,7 @@ function SWEP:Initialize()
 
 		self:SetCrackTime( keypad_crack_time:GetInt() )
 	end
-end	
+end
 
 function SWEP:SetupDataTables()
 	self:NetworkVar( "Int", 0, "CrackTime" )
@@ -67,7 +67,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + 0.4)
 
 
-	
+
 	if self.IsCracking or not IsValid(self.Owner) then return end
 
 	local tr = self.Owner:GetEyeTrace()
@@ -80,7 +80,7 @@ function SWEP:PrimaryAttack()
 
 		self:SetWeaponHoldType("pistol") -- TODO: Send as networked message for other clients to receive
 
-		
+
 		if SERVER then
 			net.Start("KeypadCracker_Hold")
 				net.WriteEntity(self)
@@ -90,12 +90,12 @@ function SWEP:PrimaryAttack()
 			timer.Create("KeyCrackSounds: "..self:EntIndex(), 1, self:GetCrackTime(), function()
 				if IsValid(self) and self.IsCracking then
 					self:EmitSound(self.KeyCrackSound, 100, 100)
-					
+
 				end
 			end)
 		else
 			self.Dots = self.Dots or ""
-			
+
 			local entindex = self:EntIndex()
 			timer.Create("KeyCrackDots: "..entindex, 0.5, 0, function()
 				if not IsValid(self) then
@@ -193,7 +193,7 @@ function SWEP:Think()
 		self.StartCrack = 0
 		self.EndCrack = 0
 	end
-	
+
 	self:NextThink(CurTime())
 	return true
 end
@@ -215,41 +215,41 @@ if(CLIENT) then
 			end
 
 			local frac = math.Clamp((CurTime() - self.StartCrack) / (self.EndCrack - self.StartCrack), 0, 1) -- Between 0 and 1 (a fraction omg segregation)
-			
+
 			local dots = self.Dots or ""
-			
+
 			local w, h = ScrW(), ScrH()
-			
+
 			local x, y = (w / 2) - 150, (h / 2) - 25
 			local w, h = 300, 50
-			
+
 			draw.RoundedBox(4, x, y, w, h, self.BoxColor)
-			
-			surface.SetDrawColor(Color(255 + (frac * -255), frac * 255, 40))			
+
+			surface.SetDrawColor(Color(255 + (frac * -255), frac * 255, 40))
 			surface.DrawRect(x + 5, y + 5, frac * (w - 10), h - 10)
-			
+
 			surface.SetFont("KeypadCrack")
 			local fontw, fonth = surface.GetTextSize("Cracking")
 			local fontx, fonty = (x + (w / 2)) - (fontw / 2), (y + (h / 2)) - (fonth / 2)
-			
+
 			surface.SetTextPos(fontx + 1, fonty+1)
 			surface.SetTextColor(color_black)
 			surface.DrawText("Cracking"..dots)
-			
+
 			surface.SetTextPos(fontx, fonty)
 			surface.SetTextColor(color_white)
 			surface.DrawText("Cracking"..dots)
 		end
 	end
-	
+
 	SWEP.DownAngle = Angle(-10, 0, 0)
-	
+
 	SWEP.LowerPercent = 1
 	SWEP.SwayScale = 0
-	
+
 	function SWEP:GetViewModelPosition(pos, ang)
-		
-		
+
+
 		if self.IsCracking then
 			local delta = FrameTime() * 3.5
 			self.LowerPercent = math.Clamp(self.LowerPercent - delta, 0, 1)
@@ -257,7 +257,7 @@ if(CLIENT) then
 			local delta = FrameTime() * 5
 			self.LowerPercent = math.Clamp(self.LowerPercent + delta, 0, 1)
 		end
-		
+
 		ang:RotateAroundAxis(ang:Forward(), self.DownAngle.p * self.LowerPercent)
 		ang:RotateAroundAxis(ang:Right(), self.DownAngle.p * self.LowerPercent)
 
@@ -278,10 +278,10 @@ if(CLIENT) then
 			end
 		end
 	end)
-	
+
 	net.Receive("KeypadCracker_Sparks", function()
 		local ent = net.ReadEntity()
-		
+
 		if IsValid(ent) then
 			local vPoint = ent:GetPos()
 			local effect = EffectData()
@@ -290,7 +290,7 @@ if(CLIENT) then
 			effect:SetEntity(ent)
 			effect:SetScale(2)
 			util.Effect("cball_bounce", effect)
-			
+
 			ent:EmitSound("buttons/combine_button7.wav", 100, 100)
 		end
 	end)

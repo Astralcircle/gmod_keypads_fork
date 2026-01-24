@@ -59,7 +59,7 @@ local last_press = 0
 local enter_strict = CreateConVar("keypad_willox_enter_strict", "0", FCVAR_ARCHIVE, "Only allow the numpad's enter key to be used to accept keypads' input")
 
 hook.Add("CreateMove", "Keypad", function(cmd)
-	
+
 	if RealTime() - 0.1 < last_press then
 		return
 	end
@@ -86,7 +86,7 @@ hook.Add("CreateMove", "Keypad", function(cmd)
 			end
 
 			last_press = RealTime()
-			
+
 			handler(ent)
 
 			return

@@ -118,7 +118,7 @@ function TOOL:LeftClick(tr)
 	local weld = util.tobool(self:GetClientNumber("weld"))
 
 	if freeze or weld then
-		local phys = ent:GetPhysicsObject() 
+		local phys = ent:GetPhysicsObject()
 
 		if IsValid(phys) then
 			phys:EnableMotion(false)
