@@ -73,7 +73,7 @@ function SWEP:PrimaryAttack()
 	local tr = self.Owner:GetEyeTrace()
 	local ent = tr.Entity
 
-	if IsValid(ent) and tr.HitPos:Distance(self.Owner:GetShootPos()) <= 50 and ent.IsKeypad then
+	if IsValid(ent) and tr.HitPos:Distance(self.Owner:GetShootPos()) <= 50 and (ent.IsKeypad or ent:GetClass() == "gmod_wire_keypad") then
 		self.IsCracking = true
 		self.StartCrack = CurTime()
 		self.EndCrack = CurTime() + self:GetCrackTime()
@@ -138,8 +138,20 @@ function SWEP:Succeed()
 	local ent = tr.Entity
 	self:SetWeaponHoldType(self.IdleStance)
 
-	if SERVER and IsValid(ent) and tr.HitPos:Distance(self.Owner:GetShootPos()) <= 50 and ent.IsKeypad then
-		ent:Process(true)
+	if SERVER and IsValid(ent) and tr.HitPos:Distance(self.Owner:GetShootPos()) <= 50 and (ent.IsKeypad or ent:GetClass() == "gmod_wire_keypad") then
+		if ent:GetClass() == "gmod_wire_keypad" then
+			Wire_TriggerOutput(ent, "Valid", 1)
+			ent:SetDisplayText("y")
+
+			timer.Simple(2, function()
+				if IsValid(ent) then
+					Wire_TriggerOutput(ent, "Valid", 0)
+					ent:SetDisplayText("")
+				end
+			end)
+		else
+			ent:Process(true)
+		end
 
 		net.Start("KeypadCracker_Hold")
 			net.WriteEntity(self)
@@ -184,7 +196,7 @@ function SWEP:Think()
 	if self.IsCracking and IsValid(self.Owner) then
 		local tr = self.Owner:GetEyeTrace()
 
-		if not IsValid(tr.Entity) or tr.HitPos:Distance(self.Owner:GetShootPos()) > 50 or not tr.Entity.IsKeypad then
+		if not IsValid(tr.Entity) or tr.HitPos:Distance(self.Owner:GetShootPos()) > 50 or not (tr.Entity.IsKeypad or tr.Entity:GetClass() == "gmod_wire_keypad") then
 			self:Fail()
 		elseif self.EndCrack <= CurTime() then
 			self:Succeed()
