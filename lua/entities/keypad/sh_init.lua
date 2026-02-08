@@ -2,8 +2,6 @@ ENT.Base = WireLib and "base_wire_entity" or "base_gmodentity"
 ENT.Type = "anim"
 
 ENT.Model = Model("models/props_lab/keypad.mdl")
-ENT.Spawnable = true
-
 ENT.Scale = 0.02
 ENT.Value = ""
 
@@ -84,4 +82,28 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Int", 0, "Status" )
 
 	self:NetworkVar( "Bool", 0, "Secure" )
+end
+
+if SERVER then
+	duplicator.RegisterEntityClass("keypad", function(ply, data, keypaddata)
+		if IsValid(ply) and not ply:CheckLimit("keypads") then return false end
+
+		local keypad = ents.Create("keypad")
+		if not IsValid(keypad) then return false end
+
+		duplicator.DoGeneric(keypad, data)
+		keypad:Spawn()
+
+		duplicator.DoGenericPhysics(keypad, ply, data)
+		keypad:SetKeypadOwner(ply)
+		keypad:SetData(keypaddata)
+		keypad:SetPlayer(ply)
+
+		if IsValid(ply) then
+			ply:AddCount("keypads", keypad)
+			ply:AddCleanup("keypads", keypad)
+		end
+
+		return keypad
+	end, "Data", "KeypadData")
 end
