@@ -136,3 +136,8 @@ duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, e
 	entity:SetKeypadOwner(ply)
 	entity:SetData(data)
 end)
+
+duplicator.RegisterEntityModifier("keypad_wire_password_passthrough", function(ply, entity, data)
+	entity:SetKeypadOwner(ply)
+    entity:SetData(data)
+end)
