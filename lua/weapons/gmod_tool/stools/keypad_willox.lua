@@ -32,7 +32,6 @@ TOOL.ClientConVar["output_on"] = '1'
 TOOL.ClientConVar["output_off"] = '0'
 
 cleanup.Register("keypads")
-scripted_ents.Alias("keypad_wire", "keypad")
 
 if CLIENT then
 	language.Add("tool.keypad_willox.name", "Keypad")

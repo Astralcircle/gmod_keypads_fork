@@ -84,11 +84,13 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Bool", 0, "Secure" )
 end
 
+scripted_ents.Alias("keypad_wire", "keypad")
+
 if SERVER then
-	duplicator.RegisterEntityClass("keypad", function(ply, data, keypaddata)
+	local function MakeKeypad(ply, data, keypaddata)
 		if IsValid(ply) and not ply:CheckLimit("keypads") then return false end
 
-		local keypad = ents.Create("keypad")
+		local keypad = ents.Create(data.Class)
 		if not IsValid(keypad) then return false end
 
 		duplicator.DoGeneric(keypad, data)
@@ -105,5 +107,8 @@ if SERVER then
 		end
 
 		return keypad
-	end, "Data", "KeypadData")
+	end
+
+	duplicator.RegisterEntityClass("keypad", MakeKeypad, "Data", "KeypadData")
+	duplicator.RegisterEntityClass("keypad_wire", MakeKeypad, "Data", "KeypadData")
 end
