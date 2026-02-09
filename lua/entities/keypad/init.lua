@@ -42,7 +42,7 @@ function ENT:Process(granted)
 		outputKey = "Access Denied"
 	end
 
-	local owner = self:GetKeypadOwner()
+	local owner = self:GetPlayer()
 
 	timer.Simple(math.max(initdelay + length * (repeats + 1) + delay * repeats + 0.25, 2), function() -- 0.25 after last timer
 		if(IsValid(self)) then
@@ -132,12 +132,13 @@ function ENT:Reset()
 	end
 end
 
-duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, entity, data)
-	entity:SetKeypadOwner(ply)
-	entity:SetData(data)
-end)
+local function SetKeypadData(ply, ent, data)
+	local class = ent:GetClass():lower()
 
-duplicator.RegisterEntityModifier("keypad_wire_password_passthrough", function(ply, entity, data)
-	entity:SetKeypadOwner(ply)
-    entity:SetData(data)
-end)
+	if class == "keypad" or class == "keypad_wire" then
+		ent:SetData(data)
+	end
+end
+
+duplicator.RegisterEntityModifier("keypad_password_passthrough", SetKeypadData)
+duplicator.RegisterEntityModifier("keypad_wire_password_passthrough", SetKeypadData)

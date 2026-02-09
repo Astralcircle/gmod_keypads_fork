@@ -8,7 +8,9 @@ net.Receive("Keypad", function(_, ply)
 	local ent = net.ReadEntity()
 
 	if not IsValid(ent) then return end
-	if ent:GetClass():lower() ~= "keypad" then return end
+
+	local class = ent:GetClass():lower()
+	if class ~= "keypad" and class ~= "keypad_wire" then return end
 
 	if ent:GetStatus() ~= ent.Status_None then return end
 	if ply:EyePos():Distance(ent:GetPos()) >= 120 then return end

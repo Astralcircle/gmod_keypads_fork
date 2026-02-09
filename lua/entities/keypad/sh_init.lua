@@ -16,7 +16,6 @@ ENT.Command_Abort = 2
 ENT.IsKeypad = true
 
 AccessorFunc(ENT, "m_Password", "Password", FORCE_STRING)
-AccessorFunc(ENT, "m_KeypadOwner", "KeypadOwner")
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
@@ -43,9 +42,8 @@ function ENT:Initialize()
 
 		self:SetValue("")
 		self:SetPassword("1337")
-		self:SetKeypadOwner(NULL)
 
-		if(not self.KeypadData) then
+		if not self.KeypadData then
 			self:SetData({
 				Password = 1337,
 
@@ -97,8 +95,6 @@ if SERVER then
 		keypad:Spawn()
 
 		duplicator.DoGenericPhysics(keypad, ply, data)
-		keypad:SetKeypadOwner(ply)
-		keypad:SetData(keypaddata)
 		keypad:SetPlayer(ply)
 
 		if IsValid(ply) then

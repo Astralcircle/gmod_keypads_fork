@@ -71,7 +71,6 @@ function TOOL:SetupKeypad(ent, pass)
 		Secure = tobool(self:GetClientNumber("secure")),
 	}
 
-	ent:SetKeypadOwner(self:GetOwner())
 	ent:SetData(data)
 end
 
@@ -83,18 +82,16 @@ function TOOL:RightClick(tr)
 
 	local ply = self:GetOwner()
 	local password = tonumber(ply:GetInfo("keypad_willox_password"))
-	local trace_ent = tr.Entity
 
 	if password == nil or (string.len(tostring(password)) > 4) or (string.find(tostring(password), "0")) then
 		ply:PrintMessage(3, "Invalid password!")
 		return false
 	end
 
-	if trace_ent:GetKeypadOwner() == ply then
-		self:SetupKeypad(trace_ent, password)
+	local trace_ent = tr.Entity
+	self:SetupKeypad(trace_ent, password)
 
-		return true
-	end
+	return true
 end
 
 function TOOL:LeftClick(tr)
