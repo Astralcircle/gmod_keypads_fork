@@ -87,7 +87,7 @@ end
 scripted_ents.Alias("keypad_wire", "keypad")
 
 if SERVER then
-	local function MakeKeypad(ply, data, keypaddata)
+	local function MakeKeypad(ply, data)
 		if IsValid(ply) and not ply:CheckLimit("keypads") then return false end
 
 		local keypad = ents.Create(data.Class)
@@ -109,6 +109,6 @@ if SERVER then
 		return keypad
 	end
 
-	duplicator.RegisterEntityClass("keypad", MakeKeypad, "Data", "KeypadData")
-	duplicator.RegisterEntityClass("keypad_wire", MakeKeypad, "Data", "KeypadData")
+	duplicator.RegisterEntityClass("keypad", MakeKeypad, "Data")
+	duplicator.RegisterEntityClass("keypad_wire", MakeKeypad, "Data")
 end
